@@ -8,7 +8,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import com.kryptopass.common.nav.MovieInput
+
 
 @Composable
 fun MovieScreen(
@@ -25,4 +27,6 @@ fun MovieScreen(
             style = MaterialTheme.typography.headlineLarge
         )
     }
+
 }
+

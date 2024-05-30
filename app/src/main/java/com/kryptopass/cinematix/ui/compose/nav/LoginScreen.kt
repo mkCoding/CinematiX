@@ -1,5 +1,7 @@
 package com.kryptopass.cinematix.ui.compose.nav
 
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -21,6 +23,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,13 +37,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.google.firebase.auth.FirebaseAuth
 import com.kryptopass.cinematix.R
 import com.kryptopass.common.nav.NavRoutes
+import kotlinx.coroutines.launch
+import kotlin.coroutines.coroutineContext
 
 @Composable
 fun LoginScreen(navController: NavHostController) {
     var showLoginDialog by remember { mutableStateOf(false) }
     val backgroundImage: Painter = painterResource(R.drawable.app_bc)
+
 
     Image(
         painter = backgroundImage,
@@ -77,6 +84,7 @@ fun LoginScreen(navController: NavHostController) {
             )
             Spacer(modifier = Modifier.height(40.dp))
 
+            //If Login button is clicked show the Login Dialog box
             OutlinedButton(
                 onClick = { showLoginDialog = true },
                 modifier = Modifier
@@ -99,7 +107,9 @@ fun LoginScreen(navController: NavHostController) {
             Spacer(modifier = Modifier.height(20.dp))
 
             OutlinedButton(
-                onClick = { /* Handle authenticate */ },
+                onClick = {
+                    /* Add authentication */
+                          },
                 modifier = Modifier
                     .width(360.dp)
                     .height(48.dp)
@@ -118,6 +128,7 @@ fun LoginScreen(navController: NavHostController) {
 
             Spacer(modifier = Modifier.height(20.dp))
 
+            //This button will navigate to Sign Up screen
             OutlinedButton(
                 onClick = { navController.navigate(NavRoutes.SignUp.route) },
                 modifier = Modifier
@@ -142,10 +153,27 @@ fun LoginScreen(navController: NavHostController) {
     }
 }
 
+//is user verified
+fun signInWithEmailAndPassword(email: String, password: String) {
+    FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
+        .addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                // Login successful
+            } else {
+                // Login failed
+                val exception = task.exception
+                // Handle the error
+            }
+        }
+}
+
 @Composable
 fun LoginDialog(onDismiss: () -> Unit, navController: NavHostController) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+
+    val coroutineScope = rememberCoroutineScope()
+    val context = LocalContext.current
 
     AlertDialog(
         modifier = Modifier
@@ -170,8 +198,29 @@ fun LoginDialog(onDismiss: () -> Unit, navController: NavHostController) {
             }
         },
         confirmButton = {
+            //if login is successful navigate to the movies page
             OutlinedButton(
-                onClick = { navController.navigate(NavRoutes.Movies.route) },
+                onClick = {
+                    //Added firebase auth to check for credentials made via Firebase
+                    //authentication on website
+                    FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
+                        .addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+                                // Login successful
+                                navController.navigate(NavRoutes.Movies.route)
+                            } else {
+                                // Login failed
+                                coroutineScope.launch {
+                                    //display toast message if credentials don't match the ones on Firebase
+                                    Toast.makeText(context, "Incorrect Credentials", Toast.LENGTH_SHORT).show()
+                                }
+                                val exception = task.exception
+                                // Handle the error
+                                Log.d("LoginScreen", exception.toString())
+                            }
+                        }
+
+                          },
                 modifier = Modifier
                     .width(100.dp)
                     .height(45.dp)

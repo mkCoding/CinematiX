@@ -35,6 +35,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.google.firebase.auth.FirebaseAuth
 import com.kryptopass.cinematix.ui.compose.movie.list.MovieListScreen
 import com.kryptopass.cinematix.ui.compose.movie.single.MovieScreen
 import com.kryptopass.cinematix.ui.compose.nav.LoginScreen
@@ -51,6 +52,11 @@ class MovieActivity : ComponentActivity() {
             val navController = rememberNavController()
             App(navController)
         }
+
+        //adding firebase
+        lateinit var auth: FirebaseAuth
+
+
     }
 }
 

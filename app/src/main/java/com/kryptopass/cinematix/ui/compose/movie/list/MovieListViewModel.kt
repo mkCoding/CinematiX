@@ -55,3 +55,4 @@ class MovieListViewModel @Inject constructor(
         }
     }
 }
+
