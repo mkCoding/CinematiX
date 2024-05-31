@@ -167,13 +167,12 @@ fun signInWithEmailAndPassword(email: String, password: String, context:Context,
                 Toast.makeText(context, "Success", Toast.LENGTH_SHORT).show()
 
             } else {
-                // Login failed
-                    //display toast message if credentials don't match the ones on Firebase
-                    Toast.makeText(context, "Incorrect Credentials", Toast.LENGTH_SHORT).show()
+                /*
+                 Login failed
+                 Display toast message if credentials don't match the ones on Firebase
 
-                val exception = task.exception
-                // Handle the error
-                Log.d("LoginScreen", exception.toString())
+                 */
+                Toast.makeText(context, "Incorrect Credentials", Toast.LENGTH_SHORT).show()
             }
         }
 }
