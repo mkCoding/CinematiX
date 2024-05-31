@@ -1,5 +1,6 @@
 package com.kryptopass.cinematix.ui.compose.nav
 
+import android.content.Context
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
@@ -36,6 +37,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHost
 import androidx.navigation.NavHostController
 import com.google.firebase.auth.FirebaseAuth
 import com.kryptopass.cinematix.R
@@ -154,15 +156,24 @@ fun LoginScreen(navController: NavHostController) {
 }
 
 //is user verified
-fun signInWithEmailAndPassword(email: String, password: String) {
+fun signInWithEmailAndPassword(email: String, password: String, context:Context, navController:NavHostController) {
+    //Added firebase auth to check for credentials made via Firebase
+    //authentication on website
     FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
         .addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 // Login successful
+                navController.navigate(NavRoutes.Movies.route)
+                Toast.makeText(context, "Success", Toast.LENGTH_SHORT).show()
+
             } else {
                 // Login failed
+                    //display toast message if credentials don't match the ones on Firebase
+                    Toast.makeText(context, "Incorrect Credentials", Toast.LENGTH_SHORT).show()
+
                 val exception = task.exception
                 // Handle the error
+                Log.d("LoginScreen", exception.toString())
             }
         }
 }
@@ -201,24 +212,7 @@ fun LoginDialog(onDismiss: () -> Unit, navController: NavHostController) {
             //if login is successful navigate to the movies page
             OutlinedButton(
                 onClick = {
-                    //Added firebase auth to check for credentials made via Firebase
-                    //authentication on website
-                    FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
-                        .addOnCompleteListener { task ->
-                            if (task.isSuccessful) {
-                                // Login successful
-                                navController.navigate(NavRoutes.Movies.route)
-                            } else {
-                                // Login failed
-                                coroutineScope.launch {
-                                    //display toast message if credentials don't match the ones on Firebase
-                                    Toast.makeText(context, "Incorrect Credentials", Toast.LENGTH_SHORT).show()
-                                }
-                                val exception = task.exception
-                                // Handle the error
-                                Log.d("LoginScreen", exception.toString())
-                            }
-                        }
+                    signInWithEmailAndPassword(email, password, context, navController)
 
                           },
                 modifier = Modifier

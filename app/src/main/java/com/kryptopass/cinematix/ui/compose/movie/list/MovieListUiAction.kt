@@ -6,5 +6,12 @@ import com.kryptopass.common.state.UiAction
 sealed class MovieListUiAction : UiAction {
 
     data object Load : MovieListUiAction()
-    data class OnMovieItemClick(val movieId: Int?) : MovieListUiAction()
+
+    //Add all values that you want to display on the details screen
+    data class OnMovieItemClick(
+        val movieId: Int?,
+        val originalTitle:String?,
+        val overview:String?,
+        val posterPath:String?,
+        val releaseDate:String?) : MovieListUiAction()
 }

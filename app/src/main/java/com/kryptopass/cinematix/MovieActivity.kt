@@ -56,7 +56,6 @@ class MovieActivity : ComponentActivity() {
         //adding firebase
         lateinit var auth: FirebaseAuth
 
-
     }
 }
 

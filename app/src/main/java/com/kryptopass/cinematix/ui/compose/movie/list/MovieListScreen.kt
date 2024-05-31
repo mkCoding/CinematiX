@@ -20,6 +20,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
@@ -47,7 +48,12 @@ fun MovieListScreen(
                 MovieList(it) { item ->
                     viewModel.submitAction(
                         MovieListUiAction.OnMovieItemClick(
-                            item.movieId
+                            //Add the list of attributes here
+                            item.movieId,
+                            item.originalTitle,
+                            item.overview,
+                            item.posterPath,
+                            item.releaseDate
                         )
                     )
                 }
@@ -103,4 +109,21 @@ fun MovieList(
             }
         )
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun MovieListPreview() {
+    // Define a preview for your MovieList
+    // You can pass mock or dummy data to the preview for testing purposes
+    // For example:
+    val movieList = listOf(
+        MovieListItemModel(/* pass mock data */),
+        MovieListItemModel(/* pass mock data */),
+        MovieListItemModel(/* pass mock data */),
+        MovieListItemModel(/* pass mock data */),
+        MovieListItemModel(/* pass mock data */),
+        MovieListItemModel(/* pass mock data */),
+    )
+    MovieList(model = MovieListModel(movieList), onItemClick = {})
 }
